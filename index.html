@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Attentis – AI-powered focus tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-state="idle">
+<main>
+  <header>
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="13"/><circle cx="16" cy="16" r="7"/><circle cx="16" cy="16" r="2" fill="currentColor" stroke="none"/></svg>
+    <h1>Attentis</h1>
+    <span class="badge">AI</span>
+    <span id="fps">Camera off</span>
+  </header>
+
+  <div class="dial">
+    <svg class="ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="track" cx="50" cy="50" r="47"/><circle id="arc" cx="50" cy="50" r="47"/></svg>
+    <div class="lens">
+      <div id="idle"><div><p>Your video stays on this device. All detection runs in your browser.</p><button class="primary" id="startBtn">Start camera</button></div></div>
+      <video id="video" playsinline muted></video>
+      <canvas id="overlay"></canvas>
+    </div>
+  </div>
+
+  <div class="read" aria-live="polite">
+    <p id="state">Ready</p>
+    <p id="sub">AI focus detection, running on your device</p>
+    <p id="meta"><span>Confidence <b id="confV">–</b></span><span>Eye ratio <b id="earV">–</b></span></p>
+  </div>
+
+  <div id="banner"><span id="bannerText"></span><button id="bannerClose" aria-label="Dismiss">Dismiss</button></div>
+
+  <div class="stats">
+    <div class="stat"><b id="focusV">–</b><span>Focused</span></div>
+    <div class="stat"><b id="blinkV">0</b><span>Blinks</span></div>
+    <div class="stat"><b id="warnV">0/3</b><span>Warnings</span></div>
+    <div class="stat"><b id="yawnV">0</b><span>Yawns</span></div>
+  </div>
+
+  <section class="ai" aria-label="How the AI works">
+    <h2>Live AI readout</h2>
+    <p class="aidesc">A deep-learning face model (MediaPipe Face Landmarker) finds 478 points on your face in every frame, on your device. Attentis turns those points into the signals below and decides your focus state.</p>
+    <dl>
+      <div><dt>Face points found</dt><dd id="aiPts">–</dd></div>
+      <div><dt>Eye-blink score</dt><dd id="aiBlink">–</dd></div>
+      <div><dt>Jaw-open score</dt><dd id="aiJaw">–</dd></div>
+      <div><dt>Head turn</dt><dd id="aiYaw">–</dd></div>
+      <div><dt>Head tilt</dt><dd id="aiPitch">–</dd></div>
+      <div><dt>AI model runs on</dt><dd id="aiDev">–</dd></div>
+    </dl>
+  </section>
+
+  <div class="tools">
+    <button id="audioBtn">Sound off</button>
+    <button id="calBtn">Recalibrate</button>
+    <button id="resetBtn">Reset session</button>
+  </div>
+  <p class="tip">This AI app calibrates to each person for 3 seconds. Look at the screen with your eyes open, face the camera in good light, and tap Recalibrate when someone new sits down.</p>
+</main>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
