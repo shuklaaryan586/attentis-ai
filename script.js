@@ -65,6 +65,11 @@ $('startBtn').onclick=async()=>{
     catch{landmarker=await FaceLandmarker.createFromOptions(fs,opts("CPU"));$('aiDev').textContent='CPU';}
     video.srcObject=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:640,height:480}});
     await video.play();
+    // Mobile fix: wait until the video really has frames and a real size
+    await new Promise(r=>{
+      const ok=()=>video.readyState>=2&&video.videoWidth>0&&video.videoHeight>0;
+      const t=setInterval(()=>{if(ok()){clearInterval(t);r();}},50);
+    });
     canvas.width=video.videoWidth;canvas.height=video.videoHeight;
     $('idle').style.display='none';
     loop();
@@ -83,10 +88,16 @@ const deg=v=>Math.asin(Math.max(-1,Math.min(1,v)))*180/Math.PI;
 let lastVideoTime=-1;
 function loop(){
   requestAnimationFrame(loop);
+  if(video.readyState<2||!video.videoWidth||!video.videoHeight)return;
   if(video.currentTime===lastVideoTime)return;
   lastVideoTime=video.currentTime;
+  if(canvas.width!==video.videoWidth||canvas.height!==video.videoHeight){
+    canvas.width=video.videoWidth;canvas.height=video.videoHeight; // phone rotated
+  }
   const now=performance.now()/1000;
-  const res=landmarker.detectForVideo(video,performance.now());
+  let res;
+  try{res=landmarker.detectForVideo(video,performance.now());}
+  catch(e){console.warn('Skipped a frame:',e.message);return;}
   const W=canvas.width,H=canvas.height;
   ctx.clearRect(0,0,W,H);
 
